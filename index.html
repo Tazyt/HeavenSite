@@ -41,6 +41,16 @@
         <li><strong>Peripherals:</strong> Logitech G Pro Superlight 2 Wireless, Razor Wireless Headset</li>
       </ul>
     </section>
+
+    <section class="rs-card matrix-glass">
+      <h2>Relationship Status</h2>
+      <ul>
+        <li><strong>Status:</strong> <span style="color:#ffb6e6;">Engaged</span></li>
+        <li><strong>Taken by:</strong> <span style="color:#fff0fa;">Katie</span></li>
+        <li><strong>Together since:</strong> <span style="color:#ffb6e6;">February 14, 2025</span></li>
+        <li><strong>Time Together:</strong> <span id="rs-countdown" style="color:#fff0fa;"></span></li>
+      </ul>
+    </section>
   </main>
 
   <footer class="matrix-footer">
@@ -84,6 +94,21 @@
     document.addEventListener('mouseup', () => cursor.classList.remove('active'));
     // Hide cursor on mobile
     if (window.innerWidth < 600) cursor.style.display = 'none';
+
+    // RS Countdown
+    function updateRSCountdown() {
+      const startDate = new Date('2025-02-14T00:00:00Z');
+      const now = new Date();
+      let diff = now - startDate;
+      if (diff < 0) diff = 0;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / (1000 * 60)) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
+      document.getElementById('rs-countdown').textContent = `${days}d ${hours}h ${mins}m ${secs}s`;
+    }
+    setInterval(updateRSCountdown, 1000);
+    updateRSCountdown();
   </script>
 </body>
 </html>
