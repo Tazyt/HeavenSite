@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Day | Matrix About Me</title>
+  <title>Day | About Me</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="matrix-bg">
@@ -42,11 +42,21 @@
       </ul>
     </section>
 
+    <!-- Developer Skills Section -->
+    <section class="devskills-card matrix-glass">
+      <h2>Developer Skills</h2>
+      <ul>
+        <li><strong>HTML:</strong> <span style="color:#7fffd4;">Beginner</span></li>
+        <li><strong>CSS:</strong> <span style="color:#7fffd4;">Beginner</span></li>
+        <li><strong>JavaScript:</strong> <span style="color:#ffd700;">Intermediate</span></li>
+      </ul>
+    </section>
+
     <section class="rs-card matrix-glass" style="position:relative;overflow:hidden;">
       <div id="hearts-bg" style="position:absolute;inset:0;z-index:0;pointer-events:none;"></div>
       <h2 style="position:relative;z-index:1;">Relationship Status</h2>
       <ul style="position:relative;z-index:1;">
-        <li><strong>Status:</strong> <span style="color:#ffb6e6;">Engaged</span></li>
+        <li><strong>Status:</strong> <span style="color:#ffb6e6;">Soon To Be Engaged</span></li>
         <li><strong>Taken by:</strong> <span style="color:#fff0fa;">Katie</span></li>
         <li><strong>Together since:</strong> <span style="color:#ffb6e6;">February 14, 2025</span></li>
         <li><strong>Time Together:</strong> <span id="rs-countdown" style="color:#fff0fa;"></span></li>
@@ -57,6 +67,92 @@
   <footer class="matrix-footer">
     &copy; 2025 Day (Heaven / Taz) | Discord: <span class="discord-tag">Heavenrbx</span>
   </footer>
+  <style>
+    /* Smooth slider transitions for MP3 player */
+    #music-player input[type="range"] {
+      transition: background 0.3s, box-shadow 0.3s;
+      outline: none;
+    }
+    #music-player input[type="range"]:focus {
+      box-shadow: 0 0 0 2px #ff4fa3a0;
+    }
+    #music-player input[type="range"]::-webkit-slider-thumb {
+      transition: transform 0.18s cubic-bezier(.4,2,.6,1), background 0.2s;
+    }
+    #music-player input[type="range"]:active::-webkit-slider-thumb {
+      transform: scale(1.18);
+      background: #fff0fa;
+    }
+    #music-player input[type="range"]::-moz-range-thumb {
+      transition: transform 0.18s cubic-bezier(.4,2,.6,1), background 0.2s;
+    }
+    #music-player input[type="range"]:active::-moz-range-thumb {
+      transform: scale(1.18);
+      background: #fff0fa;
+    }
+    #music-player input[type="range"]::-ms-thumb {
+      transition: transform 0.18s cubic-bezier(.4,2,.6,1), background 0.2s;
+    }
+    #music-player input[type="range"]:active::-ms-thumb {
+      transform: scale(1.18);
+      background: #fff0fa;
+    }
+    /* Optional: smooth color transition for track */
+    #music-player input[type="range"]::-webkit-slider-runnable-track {
+      transition: background 0.3s;
+    }
+    #music-player input[type="range"]::-moz-range-track {
+      transition: background 0.3s;
+    }
+    #music-player input[type="range"]::-ms-fill-lower,
+    #music-player input[type="range"]::-ms-fill-upper {
+      transition: background 0.3s;
+    }
+  </style>
+  <!-- Music Player (Custom MP3) -->
+  <div id="music-player" style="
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    z-index: 9999;
+    background: rgba(20,20,30,0.85);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px #000a;
+    padding: 8px 12px 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 220px;
+    ">
+    <div style="font-size:13px;color:#7fffd4;margin-bottom:2px;">Now Playing</div>
+    <div style="display:flex;align-items:center;gap:8px;width:100%;">
+      <button id="mp3-playpause" style="background:none;border:none;color:#7fffd4;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;">
+        <!-- Play SVG (default) -->
+        <svg id="mp3-play-icon" width="22" height="22" viewBox="0 0 22 22" fill="#7fffd4" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+          <polygon points="5,3 19,11 5,19"/>
+        </svg>
+        <!-- Pause SVG (hidden by default) -->
+        <svg id="mp3-pause-icon" width="22" height="22" viewBox="0 0 22 22" fill="#7fffd4" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+          <rect x="5" y="4" width="4" height="14" rx="1"/>
+          <rect x="13" y="4" width="4" height="14" rx="1"/>
+        </svg>
+      </button>
+      <span id="mp3-current" style="font-size:12px;color:#fff;">0:00</span>
+      <input id="mp3-progress" type="range" min="0" max="100" value="0" step="1" style="flex:1;accent-color:#ff4fa3;height:3px;">
+      <span id="mp3-duration" style="font-size:12px;color:#fff;">0:00</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;width:100%;margin-top:2px;">
+      <!-- Volume SVG Icon -->
+      <span id="mp3-volume-icon" style="display:flex;align-items:center;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="#ffd700" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="3,8 7,8 11,4 11,16 7,12 3,12"/>
+          <path d="M14 7a4 4 0 0 1 0 6" stroke="#ffd700" stroke-width="2" fill="none"/>
+        </svg>
+      </span>
+      <input id="mp3-volume" type="range" min="0" max="1" step="0.01" value="0.7" style="flex:1;accent-color:#ffd700;">
+    </div>
+    <audio id="mp3-audio" src="./assets/music/GHOSTEMANE - VENOM.mp3"></audio>
+  </div>
   <script>
     // Typewriter effect for About Me
     const aboutText = "Hi! I'm <strong>Day</strong>, also known as <strong>Heaven</strong> or <strong>Taz</strong> on Discord.<br>I'm passionate about building gaming computers, customizing setups, and helping friends with tech.<br>I love the Matrix aesthetic, gaming, and all things PC hardware.";
@@ -137,6 +233,58 @@
       }, duration * 1000);
     }
     setInterval(createHeart, 220);
+
+    // MP3 Player Logic
+    const audio = document.getElementById('mp3-audio');
+    const playBtn = document.getElementById('mp3-playpause');
+    const playIcon = document.getElementById('mp3-play-icon');
+    const pauseIcon = document.getElementById('mp3-pause-icon');
+    const progress = document.getElementById('mp3-progress');
+    const current = document.getElementById('mp3-current');
+    const duration = document.getElementById('mp3-duration');
+    const volume = document.getElementById('mp3-volume');
+
+    function formatTime(sec) {
+      sec = Math.floor(sec);
+      return `${Math.floor(sec/60)}:${('0'+(sec%60)).slice(-2)}`;
+    }
+
+    audio.volume = volume.value;
+    audio.addEventListener('loadedmetadata', () => {
+      duration.textContent = formatTime(audio.duration);
+      progress.max = Math.floor(audio.duration);
+    });
+    audio.addEventListener('timeupdate', () => {
+      current.textContent = formatTime(audio.currentTime);
+      progress.value = Math.floor(audio.currentTime);
+    });
+    progress.addEventListener('input', () => {
+      audio.currentTime = progress.value;
+    });
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    });
+    audio.addEventListener('play', () => {
+      playIcon.style.display = 'none';
+      pauseIcon.style.display = 'block';
+    });
+    audio.addEventListener('pause', () => {
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+    });
+    audio.addEventListener('ended', () => {
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+      audio.currentTime = 0;
+      progress.value = 0;
+    });
+    volume.addEventListener('input', () => {
+      audio.volume = volume.value;
+    });
   </script>
 </body>
 </html>
