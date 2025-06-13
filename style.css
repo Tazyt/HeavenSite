@@ -111,6 +111,34 @@ body.matrix-bg {
   animation: flicker 2s infinite alternate;
 }
 
+/* Relationship Info Button */
+.rs-info-button {
+  display: inline-block;
+  background: rgba(255, 79, 163, 0.2);
+  border: 1.5px solid #ff4fa3;
+  color: #fff0fa;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  text-shadow: 0 0 8px #ff4fa3;
+  margin-top: 1rem;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  box-shadow: 0 0 16px #ff4fa388;
+  letter-spacing: 0.05em;
+}
+
+.rs-info-button:hover,
+.rs-info-button:focus {
+  background: rgba(255, 79, 163, 0.35);
+  border-color: #fff0fa;
+  box-shadow: 0 0 24px #ff4fa3, 0 0 8px #fff0fa;
+  transform: translateY(-2px) scale(1.03);
+  color: #fff;
+  outline: none;
+}
+
+
 @keyframes flicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
     opacity: 1;
