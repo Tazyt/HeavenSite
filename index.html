@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Day | About Me</title>
   <link rel="stylesheet" href="style.css" />
+  <script>
+    // Cache-busting for CSS
+    (function() {
+      const links = document.getElementsByTagName('link');
+      for (let i = 0; i < links.length; i++) {
+        if (links[i].getAttribute('rel') === 'stylesheet' && links[i].getAttribute('href') === 'style.css') {
+          links[i].href = 'style.css?v=' + Date.now();
+          break;
+        }
+      }
+    })();
+  </script>
 </head>
 <body class="matrix-bg">
   <!-- Matrix Code Rain Overlay (to be styled in CSS) -->
