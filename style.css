@@ -138,6 +138,174 @@ body.matrix-bg {
   outline: none;
 }
 
+/* Mood Update Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0; /* Start hidden for animation */
+  transition: opacity 0.3s ease-in-out;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* When modal is shown via JS (display: flex), this makes it visible */
+.modal-overlay:has(.modal-content.visible) {
+    opacity: 1;
+}
+
+.modal-content {
+  /* Inherits .matrix-glass styles: background, border, box-shadow, border-radius, padding */
+  padding: 1.8rem 2rem; /* Adjust padding for modal */
+  max-width: 400px;
+  width: 90vw;
+  text-align: center;
+  transform: scale(0.9) translateY(-20px); /* Start smaller for animation */
+  opacity: 0; /* Start hidden for animation */
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease-in-out;
+}
+
+.modal-content.visible {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.modal-content h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1.2rem;
+  color: #ff4fa3; /* Ensure heading color */
+  text-shadow: 0 0 12px #ff4fa3; /* Ensure heading shadow */
+}
+
+.modal-input {
+  width: calc(100% - 20px);
+  padding: 0.7rem 10px;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1.5px solid #ff4fa3;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff0fa;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  text-shadow: 0 0 5px #ff4fa388;
+}
+
+.modal-input::placeholder {
+  color: #ffb6e6a0;
+}
+
+.modal-input:focus {
+  border-color: #fff0fa;
+  box-shadow: 0 0 12px #ff4fa3;
+}
+
+/* Mood Options Styling */
+.mood-options-container {
+  display: flex;
+  flex-direction: column; /* Stack options vertically */
+  gap: 0.8rem; /* Space between options */
+  margin-bottom: 1.2rem; /* Space before password input */
+  align-items: flex-start; /* Align items to the left */
+}
+
+.mood-option-label {
+  display: flex; /* Align radio and text */
+  align-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #fff0fa;
+  text-shadow: 0 0 5px #ff4fa388;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+  width: 100%; /* Make labels take full width for easier clicking */
+  box-sizing: border-box;
+}
+
+.mood-option-label:hover {
+  background-color: rgba(255, 79, 163, 0.15);
+}
+
+.mood-option-label input[type="radio"] {
+  appearance: none; /* Remove default radio appearance */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ff4fa3;
+  border-radius: 50%;
+  margin-right: 0.7rem;
+  outline: none;
+  cursor: pointer;
+  position: relative; /* For the inner circle */
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.mood-option-label input[type="radio"]::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  background-color: #ff4fa3;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0); /* Hidden by default */
+  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 0 8px #ff4fa3;
+}
+
+.mood-option-label input[type="radio"]:checked {
+  border-color: #fff0fa; /* Brighter border when checked */
+}
+
+.mood-option-label input[type="radio"]:checked::before {
+  transform: translate(-50%, -50%) scale(1); /* Show inner circle */
+}
+
+.mood-option-label input[type="radio"]:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 79, 163, 0.5); /* Focus outline */
+}
+
+.mood-option-text {
+  user-select: none; /* Prevent text selection on click */
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around; /* Or 'flex-end' with gap */
+  margin-top: 1.2rem;
+  gap: 1rem; /* Adds space between buttons */
+}
+
+.modal-buttons .rs-info-button {
+  margin-top: 0; /* Override default margin-top from .rs-info-button */
+  padding: 0.5rem 1rem; /* Slightly smaller buttons for modal */
+  font-size: 0.9rem;
+}
+
+.modal-buttons .rs-info-button.cancel {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffb6e6;
+  color: #ffb6e6;
+}
+
+.modal-buttons .rs-info-button.cancel:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #fff0fa;
+  color: #fff0fa;
+}
+
 
 @keyframes flicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {

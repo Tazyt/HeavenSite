@@ -80,6 +80,13 @@
       </ul>
     </section>
 
+    <!-- Current Mood Section -->
+    <section class="mood-card matrix-glass">
+      <h2>Current Mood</h2>
+      <p id="current-mood-text" style="font-size: 1.1em; color: #fff0fa; min-height: 2em;"></p>
+      <button id="open-mood-modal-btn" class="rs-info-button">Update Mood</button>
+    </section>
+
     <section class="rs-card matrix-glass" style="position:relative;overflow:hidden;">
       <div id="hearts-bg" style="position:absolute;inset:0;z-index:0;pointer-events:none;"></div>
       <h2 style="position:relative;z-index:1;">Relationship Status</h2>
@@ -96,6 +103,41 @@
   <footer class="matrix-footer">
     &copy; 2025 Day (Heaven / Taz) | Discord: <span class="discord-tag">Heavenrbx</span>
   </footer>
+
+  <!-- Mood Update Modal -->
+  <div id="mood-update-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content matrix-glass">
+      <h3 style="color: #ff4fa3; text-shadow: 0 0 12px #ff4fa3;">Update Your Mood</h3>
+      
+      <!-- Mood Options -->
+      <div class="mood-options-container">
+        <label class="mood-option-label">
+          <input type="radio" name="mood-option" value="Sad">
+          <span class="mood-option-text">Sad 😢</span>
+        </label>
+        <label class="mood-option-label">
+          <input type="radio" name="mood-option" value="Happy">
+          <span class="mood-option-text">Happy 😄</span>
+        </label>
+        <label class="mood-option-label">
+          <input type="radio" name="mood-option" value="Okay">
+          <span class="mood-option-text">Okay 😐</span>
+        </label>
+        <label class="mood-option-label">
+          <input type="radio" name="mood-option" value="Moody">
+          <span class="mood-option-text">Moody 😒</span>
+        </label>
+      </div>
+
+      <input type="password" id="password-input" placeholder="Password..." class="modal-input">
+      <p id="modal-error-msg" style="color: #ff4fa3; display: none; margin-top: 0.5rem; font-size: 0.9em;"></p>
+      <div class="modal-buttons">
+        <button id="submit-mood-btn" class="rs-info-button">Update</button>
+        <button id="cancel-mood-btn" class="rs-info-button cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <style>
     /* Smooth slider transitions for MP3 player */
     #music-player input[type="range"] {
@@ -136,6 +178,95 @@
     #music-player input[type="range"]::-ms-fill-lower,
     #music-player input[type="range"]::-ms-fill-upper {
       transition: background 0.3s;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+    .modal-content {
+      background: rgba(20, 20, 30, 0.85);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+    .modal-content.visible {
+      animation: modalIn 0.3s forwards;
+    }
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .modal-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ff4fa3;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 1em;
+    }
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+    /* Button styles for modal */
+    .modal-buttons .rs-info-button {
+      flex: 1;
+      margin: 0 5px;
+    }
+
+    /* Mood Options Styles */
+    .mood-options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .mood-option-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 1.1em;
+      color: #fff;
+      transition: color 0.2s;
+    }
+    .mood-option-label:hover {
+      color: #ff4fa3;
+    }
+    .mood-option-label input {
+      display: none;
+    }
+    .mood-option-text {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .mood-option-label input:checked + .mood-option-text {
+      background: rgba(255, 79, 163, 0.2);
+      color: #ff4fa3;
     }
   </style>
   <!-- Music Player (Custom MP3) -->
@@ -262,6 +393,127 @@
       }, duration * 1000);
     }
     setInterval(createHeart, 220);
+
+    // Current Mood Logic
+    const moodTextElement = document.getElementById('current-mood-text');
+    const openMoodModalBtn = document.getElementById('open-mood-modal-btn');
+    const moodModal = document.getElementById('mood-update-modal');
+    // const newMoodInput = document.getElementById('new-mood-input'); // No longer needed
+    const passwordInput = document.getElementById('password-input');
+    const submitMoodBtn = document.getElementById('submit-mood-btn');
+    const cancelMoodBtn = document.getElementById('cancel-mood-btn');
+    const modalErrorMsg = document.getElementById('modal-error-msg');
+    const moodOptionsRadios = document.querySelectorAll('input[name="mood-option"]');
+
+    // !!! IMPORTANT: Replace "YOUR_SECRET_PASSWORD" with your actual password !!!
+    const MY_SECRET_PASSWORD = "14.02.2025"; 
+    let currentMood = localStorage.getItem('userMood') || "Okay"; // Default to one of the options
+
+    function displayCurrentMood() {
+      if (moodTextElement) {
+        // Map value to display text if needed, or store display text directly
+        let displayMood = currentMood;
+        switch(currentMood) {
+            case "Sad": displayMood = "Sad 😢"; break;
+            case "Happy": displayMood = "Happy 😄"; break;
+            case "Okay": displayMood = "Okay 😐"; break;
+            case "Moody": displayMood = "Moody 😒"; break;
+        }
+        moodTextElement.textContent = displayMood;
+      }
+    }
+
+    function showMoodModal() {
+      if (moodModal) {
+        // newMoodInput.value = ""; // No longer needed
+        passwordInput.value = "";
+        modalErrorMsg.style.display = 'none';
+
+        // Pre-select current mood
+        let moodFound = false;
+        moodOptionsRadios.forEach(radio => {
+          if (radio.value === currentMood) {
+            radio.checked = true;
+            moodFound = true;
+          } else {
+            radio.checked = false;
+          }
+        });
+        if (!moodFound && moodOptionsRadios.length > 0) {
+            moodOptionsRadios.forEach(radio => { // Default to "Okay" if currentMood is not in options
+                if (radio.value === "Okay") radio.checked = true;
+            });
+        }
+
+
+        moodModal.style.display = 'flex';
+        setTimeout(() => { // Allow display:flex to apply before starting animation
+            const modalContent = moodModal.querySelector('.modal-content');
+            if (modalContent) modalContent.classList.add('visible');
+        }, 10);
+      }
+    }
+
+    function hideMoodModal() {
+      if (moodModal) {
+        const modalContent = moodModal.querySelector('.modal-content');
+        if (modalContent) modalContent.classList.remove('visible');
+        // Wait for animation to finish before setting display to none
+        setTimeout(() => {
+            moodModal.style.display = 'none';
+        }, 300); // Match CSS transition duration
+      }
+    }
+
+    if (openMoodModalBtn) {
+      openMoodModalBtn.addEventListener('click', showMoodModal);
+    }
+
+    if (cancelMoodBtn) {
+      cancelMoodBtn.addEventListener('click', hideMoodModal);
+    }
+
+    if (moodModal) {
+      // Close modal if user clicks on the overlay
+      moodModal.addEventListener('click', (event) => {
+        if (event.target === moodModal) {
+          hideMoodModal();
+        }
+      });
+    }
+    
+    if (submitMoodBtn) {
+      submitMoodBtn.addEventListener('click', () => {
+        const enteredPassword = passwordInput.value;
+        let selectedMood = "";
+        moodOptionsRadios.forEach(radio => {
+          if (radio.checked) {
+            selectedMood = radio.value;
+          }
+        });
+
+        if (enteredPassword === MY_SECRET_PASSWORD) {
+          if (selectedMood) {
+            currentMood = selectedMood;
+            localStorage.setItem('userMood', currentMood);
+            displayCurrentMood();
+            hideMoodModal();
+            modalErrorMsg.style.display = 'none';
+          } else {
+            // This case should ideally not happen if a radio is always selected
+            modalErrorMsg.textContent = "Please select a mood.";
+            modalErrorMsg.style.display = 'block';
+          }
+        } else {
+          modalErrorMsg.textContent = "Incorrect password.";
+          modalErrorMsg.style.display = 'block';
+          passwordInput.value = ""; // Clear password field
+        }
+      });
+    }
+
+    // Initial display
+    displayCurrentMood();
 
     // MP3 Player Logic
     const audio = document.getElementById('mp3-audio');
