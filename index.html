@@ -410,7 +410,6 @@
     const moodTextElement = document.getElementById('current-mood-text');
     const openMoodModalBtn = document.getElementById('open-mood-modal-btn');
     const moodModal = document.getElementById('mood-update-modal');
-    // const newMoodInput = document.getElementById('new-mood-input'); // No longer needed
     const passwordInput = document.getElementById('password-input');
     const submitMoodBtn = document.getElementById('submit-mood-btn');
     const cancelMoodBtn = document.getElementById('cancel-mood-btn');
@@ -418,18 +417,50 @@
     const moodOptionsRadios = document.querySelectorAll('input[name="mood-option"]');
 
     // !!! IMPORTANT: Replace "YOUR_SECRET_PASSWORD" with your actual password !!!
+    // This client-side password check is not secure for protecting a shared resource.
+    // Authentication should be handled server-side with a real backend.
     const MY_SECRET_PASSWORD = "14.02.2025"; 
-    let currentMood = localStorage.getItem('userMood') || "Okay"; // Default to one of the options
+    let currentMood = "Okay"; // Default mood, will be fetched from server
 
-    function displayCurrentMood() {
+    // Placeholder function to simulate fetching mood from a server
+    async function fetchMoodFromServer() {
+      // In a real application, this would be an API call:
+      // const response = await fetch('/api/get-mood');
+      // const data = await response.json();
+      // return data.mood;
+      console.log("Simulating fetch mood from server...");
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+      // For now, return the locally stored currentMood or a default if not set.
+      // In a real scenario, this would be the authoritative mood from the server.
+      return currentMood; // Or a default like "Okay" if server fetch fails
+    }
+
+    // Placeholder function to simulate updating mood on a server
+    async function updateMoodOnServer(newMood) {
+      // In a real application, this would be an API call:
+      // const response = await fetch('/api/update-mood', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ mood: newMood, password: enteredPassword }) // Password should be handled securely
+      // });
+      // return response.ok;
+      console.log(`Simulating update mood to "${newMood}" on server...`);
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+      return true; // Simulate success
+    }
+
+    async function displayCurrentMood() {
       if (moodTextElement) {
-        // Map value to display text if needed, or store display text directly
+        const moodFromServer = await fetchMoodFromServer();
+        currentMood = moodFromServer; // Update local currentMood with fetched value
+
         let displayMood = currentMood;
         switch(currentMood) {
             case "Sad": displayMood = "Sad 😢"; break;
             case "Happy": displayMood = "Happy 😄"; break;
             case "Okay": displayMood = "Okay 😐"; break;
             case "Moody": displayMood = "Moody 😒"; break;
+            default: displayMood = "Okay 😐"; // Fallback
         }
         moodTextElement.textContent = displayMood;
       }
@@ -437,7 +468,6 @@
 
     function showMoodModal() {
       if (moodModal) {
-        // newMoodInput.value = ""; // No longer needed
         passwordInput.value = "";
         modalErrorMsg.style.display = 'none';
 
@@ -457,9 +487,8 @@
             });
         }
 
-
         moodModal.style.display = 'flex';
-        setTimeout(() => { // Allow display:flex to apply before starting animation
+        setTimeout(() => {
             const modalContent = moodModal.querySelector('.modal-content');
             if (modalContent) modalContent.classList.add('visible');
         }, 10);
@@ -470,10 +499,9 @@
       if (moodModal) {
         const modalContent = moodModal.querySelector('.modal-content');
         if (modalContent) modalContent.classList.remove('visible');
-        // Wait for animation to finish before setting display to none
         setTimeout(() => {
             moodModal.style.display = 'none';
-        }, 300); // Match CSS transition duration
+        }, 300);
       }
     }
 
@@ -486,7 +514,6 @@
     }
 
     if (moodModal) {
-      // Close modal if user clicks on the overlay
       moodModal.addEventListener('click', (event) => {
         if (event.target === moodModal) {
           hideMoodModal();
@@ -495,7 +522,7 @@
     }
     
     if (submitMoodBtn) {
-      submitMoodBtn.addEventListener('click', () => {
+      submitMoodBtn.addEventListener('click', async () => {
         const enteredPassword = passwordInput.value;
         let selectedMood = "";
         moodOptionsRadios.forEach(radio => {
@@ -506,26 +533,38 @@
 
         if (enteredPassword === MY_SECRET_PASSWORD) {
           if (selectedMood) {
-            currentMood = selectedMood;
-            localStorage.setItem('userMood', currentMood);
-            displayCurrentMood();
-            hideMoodModal();
-            modalErrorMsg.style.display = 'none';
+            // Attempt to update mood on the server
+            const success = await updateMoodOnServer(selectedMood);
+            if (success) {
+              currentMood = selectedMood; // Update local mood state
+              // No longer using localStorage: localStorage.setItem('userMood', currentMood);
+              displayCurrentMood(); // Re-fetch and display, or directly display
+              hideMoodModal();
+              modalErrorMsg.style.display = 'none';
+            } else {
+              modalErrorMsg.textContent = "Failed to update mood on server.";
+              modalErrorMsg.style.display = 'block';
+            }
           } else {
-            // This case should ideally not happen if a radio is always selected
             modalErrorMsg.textContent = "Please select a mood.";
             modalErrorMsg.style.display = 'block';
           }
         } else {
           modalErrorMsg.textContent = "Incorrect password.";
           modalErrorMsg.style.display = 'block';
-          passwordInput.value = ""; // Clear password field
+          passwordInput.value = "";
         }
       });
     }
 
-    // Initial display
+    // Initial display - fetch mood from server on page load
     displayCurrentMood();
+
+    // To make mood updates appear "live" for everyone without manual refresh,
+    // you would also need a mechanism like WebSockets or periodic polling
+    // in fetchMoodFromServer() or a separate function to get updates from the server.
+    // For example, polling every few seconds:
+    // setInterval(displayCurrentMood, 5000); // Fetch and update mood every 5 seconds
 
     // MP3 Player Logic
     const audio = document.getElementById('mp3-audio');
